@@ -44,10 +44,59 @@
   <button id="send" disabled>Отправить</button>
 
   <script>
-    let startTime, timerInterval;
+    document.addEventListener('DOMContentLoaded', () => {
+      let startTime, timerInterval;
 
-    const display = document.getElementById('display');
-    const startBtn = document.getElementById('start');
-    const stopBtn = document.getElementById('stop');
-    const sendBtn = document.getElementById('send');
-    const laneSelect = document.getElemen
+      const display = document.getElementById('display');
+      const startBtn = document.getElementById('start');
+      const stopBtn = document.getElementById('stop');
+      const sendBtn = document.getElementById('send');
+      const laneSelect = document.getElementById('lane');
+
+      function formatTime(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        const millis = ms % 1000;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+      }
+
+      startBtn.onclick = () => {
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+          display.textContent = formatTime(Date.now() - startTime);
+        }, 10);
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        sendBtn.disabled = true;
+      };
+
+      stopBtn.onclick = () => {
+        clearInterval(timerInterval);
+        stopBtn.disabled = true;
+        sendBtn.disabled = false;
+      };
+
+      sendBtn.onclick = () => {
+        const data = {
+          lane: laneSelect.value,
+          time: display.textContent,
+          timestamp: new Date().toISOString()
+        };
+        fetch('https://script.google.com/macros/s/AKfycbxdbKoyZSV-B7C8csVe4tgeSBBzhf-gmgW6v_y4wX5jdZF40FHMmyJbdJzRHVr24Rg/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        })
+        .then(r => {
+          if (r.ok) alert('Отправлено!');
+          else alert('Ошибка отправки.');
+          sendBtn.disabled = true;
+          startBtn.disabled = false;
+          display.textContent = '0:00.000';
+        })
+        .catch(() => alert('Не удалось отправить'));
+      };
+    });
+  </script>
+</body>
+</html>
