@@ -5,13 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Секундомер</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: sans-serif;
-      margin: 0 auto;
+      margin: 0;
+      padding: 20px;
       max-width: 480px;
       text-align: center;
-      padding: 20px 10px; /* добавлен горизонтальный отступ */
-      box-sizing: border-box;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     h2 {
@@ -32,10 +37,10 @@
 
     .lane-buttons {
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 0 10px; /* добавлен внутренний отступ */
+      justify-content: space-between;
+      gap: 8px;
       flex-wrap: nowrap;
+      width: 100%;
     }
 
     .lane-btn {
@@ -46,16 +51,15 @@
       border-radius: 10px;
       background-color: #f0f0f0;
       cursor: pointer;
-      min-width: 90px;
-      max-width: 110px;
+      width: 100%;
+      max-width: 100px;
       height: 50px;
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
       transition: background-color 0.3s, border-color 0.3s;
-      box-sizing: border-box;
-      flex: 1 1 auto;
     }
 
     .lane-btn.active {
@@ -65,34 +69,32 @@
     }
 
     #display {
-      max-width: 100%;
-      margin: 30px auto;
+      margin: 30px 0;
       font-weight: bold;
       user-select: none;
-      font-size: clamp(3rem, 10vw, 5rem);
+      font-size: clamp(2.5rem, 8vw, 4rem);
       line-height: 1;
     }
 
     .control-buttons {
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      justify-content: space-between;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
     button {
       font-size: 1.2em;
       padding: 14px 0;
-      width: 140px;
+      width: 100%;
+      max-width: 140px;
       border: none;
       border-radius: 10px;
       background-color: #e0e0e0;
       cursor: pointer;
       user-select: none;
       transition: background-color 0.3s;
-      box-sizing: border-box;
-      flex-shrink: 0;
+      flex: 1;
     }
 
     button:disabled {
