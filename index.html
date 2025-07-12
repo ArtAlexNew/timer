@@ -43,24 +43,41 @@
       margin-bottom: 10px;
     }
 
+    .lane-display {
+      margin-bottom: 20px;
+    }
+
+    .lane-number {
+      font-size: 5em;
+      font-weight: bold;
+      color: #00FFAA;
+    }
+
+    .lane-text {
+      font-size: 0.8em;
+      opacity: 0.9;
+      color: #00FFAA;
+      margin-top: -10px;
+    }
+
     #password-display {
-      font-size: 4em;
-      letter-spacing: 12px;
+      font-size: 3em;
+      letter-spacing: 10px;
       margin-bottom: 20px;
     }
 
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
       margin: auto;
-      max-width: 300px;
+      max-width: 260px;
     }
 
     .keypad button {
-      font-size: 3em;
-      padding: 15px 0;
+      font-size: 2.2em;
+      padding: 10px 0;
       border: none;
       border-radius: 10px;
       background-color: #444;
@@ -73,19 +90,13 @@
       transform: scale(0.95);
     }
 
-    .lane-label {
-      font-weight: bold;
-      font-size: 2.8em;
-      margin-bottom: 20px;
-    }
-
     #display {
       margin: 30px 0;
       font-family: 'Roboto', sans-serif;
       font-weight: 700;
       user-select: none;
-      font-size: clamp(3.5rem, 8vw, 4.5rem); /* уменьшено */
-      color: #00FFAA;
+      font-size: clamp(2.8rem, 7.5vw, 4.8rem); /* уменьшено */
+      color: white;
       word-break: break-word;
     }
 
@@ -98,7 +109,7 @@
 
     button.control {
       font-size: 1.2em;
-      padding: 20px 0; /* увеличена толщина */
+      padding: 20px 0;
       width: 100%;
       max-width: 120px;
       border: none;
@@ -167,7 +178,10 @@
   <!-- Экран секундомера -->
   <div id="timer-screen" class="card">
     <div class="icon-big">⏱</div>
-    <div class="lane-label" id="lane-label">Дорожка: ?</div>
+    <div class="lane-display">
+      <div class="lane-number" id="lane-number">?</div>
+      <div class="lane-text">Дорожка</div>
+    </div>
     <div id="display">0:00.000</div>
     <div class="control-buttons">
       <button id="start" class="control">Старт</button>
@@ -190,7 +204,7 @@
     const authError = document.getElementById("auth-error");
     const authScreen = document.getElementById("auth-screen");
     const timerScreen = document.getElementById("timer-screen");
-    const laneLabel = document.getElementById("lane-label");
+    const laneNumber = document.getElementById("lane-number");
 
     const keypadButtons = document.querySelectorAll(".keypad button");
     let selectedLane = null;
@@ -203,7 +217,7 @@
         } else if (val === "OK") {
           if (passwords[password]) {
             selectedLane = passwords[password];
-            laneLabel.textContent = "Дорожка: " + selectedLane;
+            laneNumber.textContent = selectedLane;
             authScreen.style.display = "none";
             timerScreen.style.display = "block";
             authError.textContent = "";
