@@ -1,53 +1,40 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Секундомер</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-    button {
-      font-size: 1.2em;
-      padding: 10px;
-      margin: 5px;
-      width: 100px;
-    }
-    select {
-      font-size: 1.1em;
-      padding: 5px;
-    }
-    #display {
-      font-size: 2em;
-      margin: 20px 0;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <h2>Секундомер</h2>
-  <label>Дорожка:
-    <select id="lane">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-    </select>
-  </label>
-  <div id="display">0:00.000</div>
-  <button id="start">Старт</button>
-  <button id="stop" disabled>Стоп</button>
-  <button id="send" disabled>Отправить</button>
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Лист1");
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let startTime, timerInterval;
+    var lane = parseInt(data.lane);
+    if (lane < 1 || lane > 4) {
+      return ContentService.createTextOutput(
+        JSON.stringify({status: "error", message: "Invalid lane"})
+      )
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader("Access-Control-Allow-Origin", "*");
+    }
 
-      const display = document.getElementById('display');
-      const startBtn = document.getElementById('start');
-      const stopBtn = document.getElementById('stop');
-      const sendBtn = document.getElementById('send');
+    var row = lane + 1; // F2 = row 2 для lane=1 и т.д.
+    sheet.getRange("F" + row).setValue(data.time);
+
+    return ContentService.createTextOutput(
+      JSON.stringify({status: "ok"})
+    )
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", "*");
+
+  } catch (err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({status: "error", message: err.toString()})
+    )
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeader("Access-Control-Allow-Origin", "*");
+  }
+}
+
+// Обработка preflight-запросов OPTIONS (нужна для CORS)
+function doOptions(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
