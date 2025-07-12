@@ -4,76 +4,89 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Секундомер</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: sans-serif;
       margin: 0;
       padding: 20px;
-      max-width: 480px;
-      text-align: center;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    h2 {
-      font-size: 2em;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .lane-container {
-      margin-bottom: 20px;
-    }
-
-    .lane-title {
-      font-weight: bold;
-      font-size: 1.4em;
-      margin-bottom: 12px;
-    }
-
-    .lane-buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: nowrap;
-      width: 100%;
-    }
-
-    .lane-btn {
-      font-size: 1.2em;
-      font-weight: bold;
-      padding: 12px 0;
-      border: 2px solid #aaa;
-      border-radius: 10px;
-      background-color: #f0f0f0;
-      cursor: pointer;
-      width: 100%;
-      max-width: 100px;
-      height: 50px;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .lane-btn.active {
-      background-color: #2196F3;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #1f1f1f, #3c3c3c);
       color: white;
-      border-color: #2196F3;
+      text-align: center;
+    }
+
+    .card {
+      background-color: #2a2a2a;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      margin: 40px auto;
+    }
+
+    #auth-screen {
+      display: block;
+    }
+
+    #timer-screen {
+      display: none;
+    }
+
+    .icon-big {
+      font-size: 8em;
+      margin-bottom: 10px;
+    }
+
+    #password-display {
+      font-size: 4em;
+      letter-spacing: 12px;
+      margin-bottom: 20px;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      justify-content: center;
+      margin: auto;
+      max-width: 300px;
+    }
+
+    .keypad button {
+      font-size: 3em;
+      padding: 15px 0;
+      border: none;
+      border-radius: 10px;
+      background-color: #444;
+      color: white;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .keypad button:active {
+      transform: scale(0.95);
+    }
+
+    .lane-label {
+      font-weight: bold;
+      font-size: 2.8em;
+      margin-bottom: 20px;
     }
 
     #display {
       margin: 30px 0;
-      font-weight: bold;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
       user-select: none;
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      line-height: 1;
+      font-size: clamp(3.5rem, 8vw, 4.5rem); /* уменьшено */
+      color: #00FFAA;
+      word-break: break-word;
     }
 
     .control-buttons {
@@ -83,71 +96,135 @@
       gap: 10px;
     }
 
-    button {
+    button.control {
       font-size: 1.2em;
-      padding: 14px 0;
+      padding: 20px 0; /* увеличена толщина */
       width: 100%;
-      max-width: 140px;
+      max-width: 120px;
       border: none;
       border-radius: 10px;
-      background-color: #e0e0e0;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s;
+      background-color: #555;
+      color: white;
+      transition: all 0.3s ease;
       flex: 1;
     }
 
-    button:disabled {
+    button.control:hover:not(:disabled) {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    button.control:disabled {
       opacity: 0.5;
       cursor: default;
     }
 
-    #send.ok {
+    #start {
       background-color: #4CAF50;
-      color: white;
+    }
+
+    #stop {
+      background-color: #F44336;
+    }
+
+    #send {
+      background-color: #2196F3;
+    }
+
+    #send.ok {
+      background-color: #777 !important;
+    }
+
+    #auth-error {
+      margin-top: 10px;
+      color: red;
+      height: 1.2em;
     }
   </style>
 </head>
 <body>
-  <h2>Секундомер</h2>
 
-  <div class="lane-container">
-    <div class="lane-title">Выбор дорожки:</div>
-    <div class="lane-buttons">
-      <div id="lane1" class="lane-btn">1</div>
-      <div id="lane2" class="lane-btn">2</div>
-      <div id="lane3" class="lane-btn">3</div>
-      <div id="lane4" class="lane-btn">4</div>
+  <!-- Экран авторизации -->
+  <div id="auth-screen" class="card">
+    <div class="icon-big">⏱</div>
+    <div id="password-display">____</div>
+    <div class="keypad">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button id="clear">⌫</button>
+      <button>0</button>
+      <button id="enter">OK</button>
+    </div>
+    <div id="auth-error"></div>
+  </div>
+
+  <!-- Экран секундомера -->
+  <div id="timer-screen" class="card">
+    <div class="icon-big">⏱</div>
+    <div class="lane-label" id="lane-label">Дорожка: ?</div>
+    <div id="display">0:00.000</div>
+    <div class="control-buttons">
+      <button id="start" class="control">Старт</button>
+      <button id="stop" class="control" disabled>Стоп</button>
+      <button id="send" class="control" disabled>Отправить</button>
     </div>
   </div>
 
-  <div id="display">0:00.000</div>
-
-  <div class="control-buttons">
-    <button id="start">Старт</button>
-    <button id="stop" disabled>Стоп</button>
-    <button id="send" disabled>Отправить</button>
-  </div>
-
   <script>
+    const passwords = {
+      "1101": "1",
+      "2202": "2",
+      "3303": "3",
+      "4404": "4"
+    };
+
+    let password = "";
+
+    const passwordDisplay = document.getElementById("password-display");
+    const authError = document.getElementById("auth-error");
+    const authScreen = document.getElementById("auth-screen");
+    const timerScreen = document.getElementById("timer-screen");
+    const laneLabel = document.getElementById("lane-label");
+
+    const keypadButtons = document.querySelectorAll(".keypad button");
+    let selectedLane = null;
+
+    keypadButtons.forEach(btn => {
+      btn.onclick = () => {
+        const val = btn.textContent;
+        if (val === "⌫") {
+          password = password.slice(0, -1);
+        } else if (val === "OK") {
+          if (passwords[password]) {
+            selectedLane = passwords[password];
+            laneLabel.textContent = "Дорожка: " + selectedLane;
+            authScreen.style.display = "none";
+            timerScreen.style.display = "block";
+            authError.textContent = "";
+          } else {
+            authError.textContent = "❌ Неверный пароль";
+            password = "";
+          }
+        } else if (password.length < 4) {
+          password += val;
+        }
+        passwordDisplay.textContent = password.padEnd(4, "_");
+      };
+    });
+
     let startTime = 0;
     let timerInterval = null;
-    let selectedLane = null;
 
     const display = document.getElementById('display');
     const startBtn = document.getElementById('start');
     const stopBtn = document.getElementById('stop');
     const sendBtn = document.getElementById('send');
-
-    const laneButtons = document.querySelectorAll('.lane-btn');
-
-    laneButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        laneButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedLane = btn.textContent;
-      });
-    });
 
     function formatTime(ms) {
       const minutes = Math.floor(ms / 60000);
@@ -184,11 +261,6 @@
         return;
       }
 
-      if (!selectedLane) {
-        alert("❗ Выберите дорожку!");
-        return;
-      }
-
       const data = {
         lane: selectedLane,
         time: display.textContent,
@@ -202,7 +274,7 @@
         body: JSON.stringify(data)
       });
 
-      sendBtn.textContent = 'ОК';
+      sendBtn.textContent = 'OK';
       sendBtn.classList.add('ok');
       sendBtn.disabled = false;
       startBtn.disabled = false;
