@@ -1,40 +1,110 @@
-function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Лист1");
-
-    var lane = parseInt(data.lane);
-    if (lane < 1 || lane > 4) {
-      return ContentService.createTextOutput(
-        JSON.stringify({status: "error", message: "Invalid lane"})
-      )
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader("Access-Control-Allow-Origin", "*");
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Секундомер</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
     }
+    button {
+      font-size: 1.2em;
+      padding: 10px;
+      margin: 5px;
+      width: 100px;
+    }
+    select {
+      font-size: 1.1em;
+      padding: 5px;
+    }
+    #display {
+      font-size: 2em;
+      margin: 20px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Секундомер</h2>
+  <label>Дорожка:
+    <select id="lane">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+    </select>
+  </label>
+  <div id="display">0:00.000</div>
+  <button id="start">Старт</button>
+  <button id="stop" disabled>Стоп</button>
+  <button id="send" disabled>Отправить</button>
 
-    var row = lane + 1; // F2 = row 2 для lane=1 и т.д.
-    sheet.getRange("F" + row).setValue(data.time);
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let startTime, timerInterval;
 
-    return ContentService.createTextOutput(
-      JSON.stringify({status: "ok"})
-    )
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*");
+      const display = document.getElementById('display');
+      const startBtn = document.getElementById('start');
+      const stopBtn = document.getElementById('stop');
+      const sendBtn = document.getElementById('send');
+      const laneSelect = document.getElementById('lane');
 
-  } catch (err) {
-    return ContentService.createTextOutput(
-      JSON.stringify({status: "error", message: err.toString()})
-    )
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeader("Access-Control-Allow-Origin", "*");
-  }
-}
+      function formatTime(ms) {
+        const minutes = Math.floor(ms / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        const millis = ms % 1000;
+        return `${minutes}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+      }
 
-// Обработка preflight-запросов OPTIONS (нужна для CORS)
-function doOptions(e) {
-  return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeader("Access-Control-Allow-Origin", "*")
-    .setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-    .setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
+      startBtn.onclick = () => {
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+          display.textContent = formatTime(Date.now() - startTime);
+        }, 10);
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        sendBtn.disabled = true;
+      };
+
+      stopBtn.onclick = () => {
+        clearInterval(timerInterval);
+        stopBtn.disabled = true;
+        sendBtn.disabled = false;
+      };
+
+      sendBtn.onclick = () => {
+        const data = {
+          lane: laneSelect.value,
+          time: display.textContent,
+          timestamp: new Date().toISOString()
+        };
+
+        fetch('https://script.google.com/macros/s/AKfycbxdbKoyZSV-B7C8csVe4tgeSBBzhf-gmgW6v_y4wX5jdZF40FHMmyJbdJzRHVr24Rg/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          mode: 'cors',
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(json => {
+          if (json.status === 'ok') {
+            alert('Отправлено!');
+          } else {
+            alert('Ошибка отправки: ' + (json.message || 'неизвестная ошибка'));
+          }
+          sendBtn.disabled = true;
+          startBtn.disabled = false;
+          display.textContent = '0:00.000';
+        })
+        .catch(err => {
+          alert('Не удалось отправить: ' + err.message);
+        });
+      };
+    });
+  </script>
+</body>
+</html>
