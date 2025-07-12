@@ -86,23 +86,15 @@
         fetch('https://script.google.com/macros/s/AKfycbxdbKoyZSV-B7C8csVe4tgeSBBzhf-gmgW6v_y4wX5jdZF40FHMmyJbdJzRHVr24Rg/exec', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          mode: 'cors',
+          mode: 'no-cors',
           body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(json => {
-          if (json.status === 'ok') {
-            alert('Отправлено!');
-          } else {
-            alert('Ошибка отправки: ' + (json.message || 'неизвестная ошибка'));
-          }
-          sendBtn.disabled = true;
-          startBtn.disabled = false;
-          display.textContent = '0:00.000';
-        })
-        .catch(err => {
-          alert('Не удалось отправить: ' + err.message);
         });
+
+        // Просто считаем, что отправлено, без подтверждения
+        alert('Данные отправлены (нет подтверждения)');
+        sendBtn.disabled = true;
+        startBtn.disabled = false;
+        display.textContent = '0:00.000';
       };
     });
   </script>
