@@ -4,14 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Секундомер</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 20px;
@@ -20,7 +15,6 @@
       color: white;
       text-align: center;
     }
-
     .card {
       background-color: #2a2a2a;
       border-radius: 20px;
@@ -29,52 +23,31 @@
       max-width: 400px;
       margin: 40px auto;
     }
-
-    #auth-screen {
-      display: block;
-    }
-
-    #timer-screen {
-      display: none;
-    }
-
-    .icon-big {
-      font-size: 8em;
-      margin-bottom: 10px;
-    }
-
-    .lane-display {
-      margin-bottom: 20px;
-    }
-
+    .icon-big { font-size: 8em; margin-bottom: 10px; }
+    .lane-display { margin-bottom: 20px; }
     .lane-number {
       font-size: 5em;
       font-weight: bold;
       color: #00FFAA;
     }
-
     .lane-text {
       font-size: 0.8em;
       opacity: 0.9;
       color: #00FFAA;
       margin-top: -10px;
     }
-
     #password-display {
       font-size: 3em;
       letter-spacing: 10px;
       margin-bottom: 20px;
     }
-
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      justify-content: center;
-      margin: auto;
       max-width: 260px;
+      margin: auto;
     }
-
     .keypad button {
       font-size: 2.2em;
       padding: 10px 0;
@@ -85,70 +58,58 @@
       transition: 0.3s;
       cursor: pointer;
     }
-
     .keypad button:active {
       transform: scale(0.95);
     }
-
     #display {
       margin: 30px 0;
-      font-family: 'Roboto', sans-serif;
       font-weight: 700;
       user-select: none;
-      font-size: clamp(2.8rem, 7.5vw, 4.8rem); /* уменьшено */
+      font-size: clamp(2.8rem, 7.5vw, 4.8rem);
       color: white;
-      word-break: break-word;
     }
-
     .control-buttons {
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
       gap: 10px;
     }
-
     button.control {
-      font-size: 1.2em;
-      padding: 20px 0;
+      padding: 20px;
       width: 100%;
       max-width: 120px;
       border: none;
       border-radius: 10px;
       background-color: #555;
-      color: white;
       transition: all 0.3s ease;
       flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
+    button.control svg {
+      width: 36px;
+      height: 36px;
+    }
     button.control:hover:not(:disabled) {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
-
     button.control:disabled {
       opacity: 0.5;
       cursor: default;
     }
-
-    #start {
-      background-color: #4CAF50;
-    }
-
-    #stop {
-      background-color: #F44336;
-    }
-
-    #send {
-      background-color: #2196F3;
-    }
-
-    #send.ok {
-      background-color: #777 !important;
-    }
-
+    #start { background-color: #4CAF50; }
+    #stop  { background-color: #F44336; }
+    #send  { background-color: #2196F3; }
+    #send.ok { background-color: #777 !important; }
     #auth-error {
       margin-top: 10px;
       color: red;
       height: 1.2em;
+    }
+
+    /* Скрываем экран секундомера по умолчанию */
+    #timer-screen {
+      display: none;
     }
   </style>
 </head>
@@ -159,18 +120,10 @@
     <div class="icon-big">⏱</div>
     <div id="password-display">____</div>
     <div class="keypad">
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>7</button>
-      <button>8</button>
-      <button>9</button>
-      <button id="clear">⌫</button>
-      <button>0</button>
-      <button id="enter">OK</button>
+      <button>1</button><button>2</button><button>3</button>
+      <button>4</button><button>5</button><button>6</button>
+      <button>7</button><button>8</button><button>9</button>
+      <button id="clear">⌫</button><button>0</button><button id="enter">OK</button>
     </div>
     <div id="auth-error"></div>
   </div>
@@ -184,37 +137,38 @@
     </div>
     <div id="display">0:00.000</div>
     <div class="control-buttons">
-      <button id="start" class="control">Старт</button>
-      <button id="stop" class="control" disabled>Стоп</button>
-      <button id="send" class="control" disabled>Отправить</button>
+      <button id="start" class="control" aria-label="Старт">
+        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="white"/></svg>
+      </button>
+      <button id="stop" class="control" disabled aria-label="Стоп">
+        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>
+      </button>
+      <button id="send" class="control" disabled aria-label="Отправить">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>
+      </button>
     </div>
   </div>
 
   <script>
-    const passwords = {
-      "1101": "1",
-      "2202": "2",
-      "3303": "3",
-      "4404": "4"
-    };
-
-    let password = "";
+    const passwords = { "1101": "1", "2202": "2", "3303": "3", "4404": "4" };
+    let password = "", selectedLane = null;
+    let startTime = 0, elapsedTime = 0, timerInterval = null, hasStoppedOnce = false;
 
     const passwordDisplay = document.getElementById("password-display");
     const authError = document.getElementById("auth-error");
     const authScreen = document.getElementById("auth-screen");
     const timerScreen = document.getElementById("timer-screen");
     const laneNumber = document.getElementById("lane-number");
+    const display = document.getElementById('display');
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const sendBtn = document.getElementById('send');
 
-    const keypadButtons = document.querySelectorAll(".keypad button");
-    let selectedLane = null;
-
-    keypadButtons.forEach(btn => {
+    document.querySelectorAll(".keypad button").forEach(btn => {
       btn.onclick = () => {
         const val = btn.textContent;
-        if (val === "⌫") {
-          password = password.slice(0, -1);
-        } else if (val === "OK") {
+        if (val === "⌫") password = password.slice(0, -1);
+        else if (val === "OK") {
           if (passwords[password]) {
             selectedLane = passwords[password];
             laneNumber.textContent = selectedLane;
@@ -225,20 +179,10 @@
             authError.textContent = "❌ Неверный пароль";
             password = "";
           }
-        } else if (password.length < 4) {
-          password += val;
-        }
+        } else if (password.length < 4) password += val;
         passwordDisplay.textContent = password.padEnd(4, "_");
       };
     });
-
-    let startTime = 0;
-    let timerInterval = null;
-
-    const display = document.getElementById('display');
-    const startBtn = document.getElementById('start');
-    const stopBtn = document.getElementById('stop');
-    const sendBtn = document.getElementById('send');
 
     function formatTime(ms) {
       const minutes = Math.floor(ms / 60000);
@@ -248,32 +192,50 @@
     }
 
     function resetSendButton() {
-      sendBtn.textContent = 'Отправить';
-      sendBtn.classList.remove('ok');
       sendBtn.disabled = true;
+      sendBtn.classList.remove('ok');
+      sendBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>';
     }
 
     startBtn.onclick = () => {
-      startTime = Date.now();
+      startTime = Date.now() - elapsedTime;
       timerInterval = setInterval(() => {
-        display.textContent = formatTime(Date.now() - startTime);
+        elapsedTime = Date.now() - startTime;
+        display.textContent = formatTime(elapsedTime);
       }, 10);
       startBtn.disabled = true;
       stopBtn.disabled = false;
+      stopBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>';
+      hasStoppedOnce = false;
       resetSendButton();
     };
 
     stopBtn.onclick = () => {
-      clearInterval(timerInterval);
-      stopBtn.disabled = true;
-      sendBtn.disabled = false;
+      if (!hasStoppedOnce) {
+        clearInterval(timerInterval);
+        hasStoppedOnce = true;
+        stopBtn.innerHTML = `
+          <svg viewBox="0 0 640 640" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+            <g transform="scale(1.1)" fill="white">
+              <path d="M256,64c-105.9,0-192,86.1-192,192h48c0-79.5,64.5-144,144-144s144,64.5,144,144s-64.5,144-144,144
+              c-39.8,0-75.9-15.9-102.2-41.8L192,352H64v128l44.5-44.5C150.2,478.4,200.9,496,256,496c105.9,0,192-86.1,192-192S361.9,64,256,64z"/>
+            </g>
+          </svg>`;
+        sendBtn.disabled = false;
+        startBtn.disabled = false;
+      } else {
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        display.textContent = '0:00.000';
+        stopBtn.disabled = true;
+        sendBtn.disabled = true;
+        stopBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>';
+        startBtn.disabled = false;
+      }
     };
 
     sendBtn.onclick = () => {
-      if (sendBtn.classList.contains('ok')) {
-        resetSendButton();
-        return;
-      }
+      if (sendBtn.classList.contains('ok')) return;
 
       const data = {
         lane: selectedLane,
@@ -288,10 +250,14 @@
         body: JSON.stringify(data)
       });
 
-      sendBtn.textContent = 'OK';
       sendBtn.classList.add('ok');
-      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>';
+      sendBtn.disabled = true;
+      stopBtn.disabled = true;
       startBtn.disabled = false;
+
+      clearInterval(timerInterval);
+      elapsedTime = 0;
       display.textContent = '0:00.000';
     };
   </script>
