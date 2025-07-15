@@ -24,7 +24,7 @@
       margin: 40px auto;
     }
     .icon-big { font-size: 8em; margin-bottom: 10px; }
-    .lane-display { margin-bottom: 20px; }
+    .lane-display { margin-bottom: 10px; }
     .lane-number {
       font-size: 5em;
       font-weight: bold;
@@ -36,6 +36,15 @@
       color: #00FFAA;
       margin-top: -10px;
     }
+    #status-indicator {
+      font-size: 1em;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    #status-indicator.online { color: #00FF00; }
+    #status-indicator.offline { color: #FF3333; }
+
     #password-display {
       font-size: 3em;
       letter-spacing: 10px;
@@ -62,7 +71,7 @@
       transform: scale(0.95);
     }
     #display {
-      margin: 30px 0;
+      margin: 30px 0 0 0;
       font-weight: 700;
       user-select: none;
       font-size: clamp(2.8rem, 7.5vw, 4.8rem);
@@ -86,7 +95,7 @@
       justify-content: center;
       align-items: center;
     }
-    button.control svg {
+    button.control svg, button.control span {
       width: 36px;
       height: 36px;
     }
@@ -106,8 +115,6 @@
       color: red;
       height: 1.2em;
     }
-
-    /* Скрываем экран секундомера по умолчанию */
     #timer-screen {
       display: none;
     }
@@ -115,7 +122,6 @@
 </head>
 <body>
 
-  <!-- Экран авторизации -->
   <div id="auth-screen" class="card">
     <div class="icon-big">⏱</div>
     <div id="password-display">____</div>
@@ -128,7 +134,6 @@
     <div id="auth-error"></div>
   </div>
 
-  <!-- Экран секундомера -->
   <div id="timer-screen" class="card">
     <div class="icon-big">⏱</div>
     <div class="lane-display">
@@ -136,6 +141,7 @@
       <div class="lane-text">Дорожка</div>
     </div>
     <div id="display">0:00.000</div>
+    <div id="status-indicator" class="offline">Offline</div>
     <div class="control-buttons">
       <button id="start" class="control" aria-label="Старт">
         <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="white"/></svg>
@@ -163,6 +169,26 @@
     const startBtn = document.getElementById('start');
     const stopBtn = document.getElementById('stop');
     const sendBtn = document.getElementById('send');
+    const status = document.getElementById('status-indicator');
+
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        sendBtn.disabled = hasStoppedOnce ? false : true;
+        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>`;
+        status.textContent = 'Online';
+        status.className = 'online';
+      } else {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = `<span style="font-size: 1.6em;">🚫</span>`;
+        status.textContent = 'Offline';
+        status.className = 'offline';
+      }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    updateOnlineStatus();
 
     document.querySelectorAll(".keypad button").forEach(btn => {
       btn.onclick = () => {
@@ -194,7 +220,7 @@
     function resetSendButton() {
       sendBtn.disabled = true;
       sendBtn.classList.remove('ok');
-      sendBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>';
+      sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>`;
     }
 
     startBtn.onclick = () => {
@@ -205,60 +231,59 @@
       }, 10);
       startBtn.disabled = true;
       stopBtn.disabled = false;
-      stopBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>';
+      stopBtn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>`;
       hasStoppedOnce = false;
       resetSendButton();
+      updateOnlineStatus();
     };
 
     stopBtn.onclick = () => {
       if (!hasStoppedOnce) {
         clearInterval(timerInterval);
         hasStoppedOnce = true;
-        stopBtn.innerHTML = `
-          <svg viewBox="0 0 640 640" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
-            <g transform="scale(1.1)" fill="white">
-              <path d="M256,64c-105.9,0-192,86.1-192,192h48c0-79.5,64.5-144,144-144s144,64.5,144,144s-64.5,144-144,144
-              c-39.8,0-75.9-15.9-102.2-41.8L192,352H64v128l44.5-44.5C150.2,478.4,200.9,496,256,496c105.9,0,192-86.1,192-192S361.9,64,256,64z"/>
-            </g>
-          </svg>`;
-        sendBtn.disabled = false;
+        stopBtn.innerHTML = `<span style="font-size: 2.6em; color: white;">↺</span>`;
+        sendBtn.disabled = !navigator.onLine;
         startBtn.disabled = false;
+        updateOnlineStatus();
       } else {
         clearInterval(timerInterval);
         elapsedTime = 0;
         display.textContent = '0:00.000';
         stopBtn.disabled = true;
         sendBtn.disabled = true;
-        stopBtn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>';
+        stopBtn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>`;
         startBtn.disabled = false;
+        hasStoppedOnce = false;
+        resetSendButton();
+        updateOnlineStatus();
       }
     };
 
     sendBtn.onclick = () => {
       if (sendBtn.classList.contains('ok')) return;
-
+      if (!navigator.onLine) {
+        alert('Нет интернета! Попробуйте снова.');
+        return;
+      }
       const data = {
         lane: selectedLane,
         time: display.textContent,
         timestamp: new Date().toISOString()
       };
-
       fetch('https://script.google.com/macros/s/AKfycbzQjAByMr1D52ZwV3N7kJ5prTVnDuwa6RaFwgkQKfg-9tPbNDqqpYEtsfFPt007s_r2VA/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         mode: 'no-cors',
         body: JSON.stringify(data)
       });
-
       sendBtn.classList.add('ok');
-      sendBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>';
       sendBtn.disabled = true;
       stopBtn.disabled = true;
       startBtn.disabled = false;
-
       clearInterval(timerInterval);
       elapsedTime = 0;
       display.textContent = '0:00.000';
+      updateOnlineStatus();
     };
   </script>
 </body>
