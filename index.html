@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Секундомер</title>
+  <title>Секундомір</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
@@ -138,7 +138,7 @@
     <div class="icon-big">⏱</div>
     <div class="lane-display">
       <div class="lane-number" id="lane-number">?</div>
-      <div class="lane-text">Дорожка</div>
+      <div class="lane-text">ДОРІЖКА</div>
     </div>
     <div id="display">0:00.000</div>
     <div id="status-indicator" class="offline">Offline</div>
@@ -149,7 +149,7 @@
       <button id="stop" class="control" disabled aria-label="Стоп">
         <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="white"/><rect x="14" y="4" width="4" height="16" fill="white"/></svg>
       </button>
-      <button id="send" class="control" disabled aria-label="Отправить">
+      <button id="send" class="control" disabled aria-label="Надіслати">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" stroke="white" stroke-width="3" fill="none"/></svg>
       </button>
     </div>
@@ -202,7 +202,7 @@
             timerScreen.style.display = "block";
             authError.textContent = "";
           } else {
-            authError.textContent = "❌ Неверный пароль";
+            authError.textContent = "❌ Невірний пароль";
             password = "";
           }
         } else if (password.length < 4) password += val;
