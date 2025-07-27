@@ -37,15 +37,18 @@
   </style>
 </head>
 <body>
-  <div class="card" onclick="changeText(this)">
+  <div class="card" id="card">
     <h1 id="message">Запливи завершено!</h1>
   </div>
 
   <script>
-    function changeText(card) {
-      const text = document.getElementById("message");
-      text.textContent = "Дякуємо!";
+    function changeText() {
+      document.getElementById("message").textContent = "Дякуємо!";
     }
+
+    const card = document.getElementById("card");
+    card.addEventListener("click", changeText);         // для ПК
+    card.addEventListener("touchstart", changeText);    // для телефона
   </script>
 </body>
 </html>
